@@ -1,6 +1,6 @@
 # Quotes-API
 
-## Endpoints
+## Tentative Endpoints
 1. **Retrieve Random Quote**
    - **Endpoint:** `/quotes/random`
    - **Method:** GET
