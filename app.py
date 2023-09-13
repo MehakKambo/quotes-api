@@ -28,3 +28,19 @@ def get_random_quote():
     json_response = json.dumps(response_data)
     
     return Response(json_response, content_type='application/json')
+
+# Returns a list of Authors
+@app.route('/authors', methods=['GET'])
+def get_all_authors():
+    conn = psycopg2.connect(app.config['CONNECTION_STRING'])
+    query = "SELECT name FROM Authors ORDER BY name;"
+    cursor = conn.cursor()
+    cursor.execute(query)
+    
+    authors = [row[0] for row in cursor.fetchall()]
+    cursor.close()
+    conn.close()
+    response_data =  {"authors": authors}
+    
+    json_response = json.dumps(response_data)
+    return Response(json_response, content_type='application/json')
