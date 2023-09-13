@@ -1,0 +1,96 @@
+ID,Text,AuthorID,categoryID
+2,Want to be happy? Stop trying to be perfect.,1,1
+3,"In a society that says, ‘Put yourself last,’ self-love and self-acceptance are revolutionary.",1,1
+4,"Dig deep—get deliberate, inspired, and going.",1,2
+5,But true belonging is not something we negotiate or accomplish with others.… It’s a personal commitment that we carry in our hearts.,1,2
+6,"To me, a leader is someone who holds her- or himself accountable for finding potential in people and processes.",1,2
+7,The opposite of belonging is fitting in.,1,1
+8,"When we are willing to risk venturing into the wilderness, and even becoming our own wilderness, we feel the deepest connection to our true self and to what matters the most.",1,1
+9,True belonging never asks us to change who we are. True belonging requires us to be who we are.,1,2
+10,"You may not control all the events that happen to you, but you can decide not to be reduced by them.",1,1
+11,"What we know matters, but who we are matters more.",1,2
+12,Worthiness doesn’t have prerequisites.,1,2
+13,Let go of who you think you’re supposed to be; embrace who you are.,1,1
+14,Self-awareness and self-love matter. Who we are is how we lead.,1,5
+15,"Love is not just something you feel, it is something you do.",2,3
+16,Love is an endless act of forgiveness. Forgiveness is the key to action and freedom.,2,3
+17,The best thing to hold onto in life is each other.,3,3
+18,Love is when the other person's happiness is more important than your own.,4,3
+19,"Love is like the wind, you can't see it but you can feel it.",5,3
+20,"Love is an untamed force. When we try to control it, it destroys us. When we try to imprison it, it enslaves us. When we try to understand it, it leaves us feeling lost and confused.",6,3
+21,"Love is not about how many days, months, or years you have been together. Love is about how much you love each other every single day.",7,3
+22,"To love is to burn, to be on fire.",8,3
+23,"Love is not just something you feel, it is something you do.",9,3
+24,Love is an endless act of forgiveness. Forgiveness is the key to action and freedom.,10,3
+25,"Friendship is born at that moment when one person says to another, 'What! You too? I thought I was the only one!'",11,4
+26,Friendship is the only cement that will ever hold the world together.,12,4
+27,A true friend is somebody who can make you laugh even when you don't want to smile.,13,4
+28,Friendship is a single soul dwelling in two bodies.,14,4
+29,Friendship is not about people who act true to your face. It's about people who remain true behind your back.,3,4
+30,"The greatest gift of life is friendship, and I have received it.",3,4
+31,Friendship isn't about whom you have known the longest. It's about who came into your life and never left your side.,4,4
+32,Friends are the family we choose for ourselves.,5,4
+33,A real friend is one who walks in when the rest of the world walks out.,7,4
+34,"Good friends are like stars. You don't always see them, but you know they're always there.",6,4
+35,Wisdom is the reward you get for a lifetime of listening when you'd have preferred to talk.,8,5
+36,The only true wisdom is in knowing you know nothing.,9,5
+37,The invariable mark of wisdom is to see the miraculous in the common.,10,5
+38,Wisdom begins in wonder.,11,5
+39,The doorstep to the temple of wisdom is a knowledge of our own ignorance.,12,5
+40,"The only way to do great work is to love what you do. If you haven't found it yet, keep looking. Don't settle.",13,5
+41,It is better to remain silent at the risk of being thought a fool than to talk and remove all doubt of it.,14,5
+42,The true sign of intelligence is not knowledge but imagination.,1,5
+43,The unexamined life is not worth living.,2,5
+44,Knowledge is knowing that we cannot know.,3,5
+45,Happiness is not something ready made. It comes from your own actions.,4,6
+46,The best way to cheer yourself up is to try to cheer somebody else up.,5,6
+47,Happiness is a warm puppy.,6,6
+48,The greatest happiness you can have is knowing that you do not necessarily require happiness.,7,6
+49,"Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful.",8,6
+50,The pursuit of happiness is a most ridiculous phrase: If you pursue happiness you'll never find it.,9,6
+51,The happiness of your life depends upon the quality of your thoughts.,10,6
+52,Some cause happiness wherever they go; others whenever they go.,11,6
+53,"Happiness is not in the mere possession of money; it lies in the joy of achievement, in the thrill of creative effort.",12,6
+54,"The only way to do great work is to love what you do. If you haven't found it yet, keep looking. Don't settle.",13,6
+55,"Success is not final, failure is not fatal: It is the courage to continue that counts.",14,7
+56,Success is walking from failure to failure with no loss of enthusiasm.,14,7
+57,Success usually comes to those who are too busy to be looking for it.,1,7
+58,"Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful.",2,7
+59,The road to success and the road to failure are almost exactly the same.,3,7
+60,Success is not just about making money. It's about making a difference.,4,7
+61,"Success is not in the destination, but in the journey.",5,7
+62,Success is not the result of spontaneous combustion. You must set yourself on fire.,6,7
+63,Success is not the measure of a man but a triumph over those who choose to hold him back.,7,7
+64,"Success is not about the destination, it's about the journey.",8,7
+65,Life is what happens when you're busy making other plans.,9,8
+66,"Life is really simple, but we insist on making it complicated.",10,8
+67,"Life is short, and it is up to you to make it sweet.",11,8
+68,Life is a journey that must be traveled no matter how bad the roads and accommodations.,12,8
+69,"In three words, I can sum up everything I've learned about life: it goes on.",13,8
+70,Life is 10% what happens to us and 90% how we react to it.,14,8
+71,Life is either a daring adventure or nothing at all.,2,8
+72,Life is 10% what happens to us and 90% how we react to it.,3,8
+73,Life is what happens when you're busy making other plans.,4,8
+74,Life is a journey that must be traveled no matter how bad the roads and accommodations.,5,8
+75,I'm writing a book. I've got the page numbers done.,6,9
+76,"The early bird might get the worm, but the second mouse gets the cheese.",7,9
+77,"Behind every great man, there is a woman rolling her eyes.",8,9
+78,"I'm on the seafood diet. I see food, and I eat it.",9,9
+79,"I used to play piano by ear, but now I use my hands.",10,9
+80,"If at first, you don't succeed, skydiving is not for you.",11,9
+81,I'm not arguing; I'm just explaining why I'm right.,12,9
+82,I'm reading a book on anti-gravity. It's impossible to put down.,13,9
+83,I'm not shy; I'm just holding back my awesomeness so I don't intimidate you.,14,9
+84,"If you're too open-minded, your brains will fall out.",6,9
+85,"Courage is not the absence of fear, but the triumph over it.",2,10
+86,"Be brave, take risks, nothing can substitute experience.",3,10
+87,Courage is found in unlikely places.,4,10
+88,"You gain strength, courage, and confidence by every experience in which you really stop to look fear in the face.",5,10
+89,It takes courage to grow up and become who you really are.,7,10
+90,Have the courage to follow your heart and intuition. They somehow know what you truly want to become.,8,10
+91,"Courage doesn't always roar. Sometimes courage is the quiet voice at the end of the day saying, 'I will try again tomorrow.'",9,10
+92,"Courage is resistance to fear, mastery of fear, not the absence of fear.",10,10
+93,Life shrinks or expands in proportion to one's courage.,11,10
+94,"Success is not final, failure is not fatal: It is the courage to continue that counts.",12,10
+95,It takes courage to stand up and speak; it takes even more courage to open your mind and listen.,13,10
+96,Courage is the power to let go of the familiar.,14,10
