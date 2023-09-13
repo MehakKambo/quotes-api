@@ -1,4 +1,4 @@
-from flask import Flask, Response
+from flask import Flask, Response, request
 import os
 import psycopg2
 from markupsafe import escape
@@ -83,3 +83,55 @@ def get_quote_by_id(quote_id_raw: int):
     json_response = json.dumps(response_data)
     return Response(json_response, content_type='application/json'), 200
     
+# Returns the 10 quotes provided the author name
+# unless the limit is provided as parameter
+@app.route('/quotes/author/<string:author_name_raw>', methods=['GET'])
+def get_quotes_by_author(author_name_raw: str):
+    conn = psycopg2.connect(app.config['CONNECTION_STRING'])
+    cursor = conn.cursor()
+    author_name = escape(author_name_raw)
+    limit = request.args.get('limit', default=10, type=int)
+    
+    # Returns the number of total quotes for the given author
+    count_query = """
+    SELECT COUNT(*) AS total_quotes
+    FROM Quotes
+    WHERE authorID = (
+        SELECT ID FROM Authors 
+        WHERE name ILIKE %s
+    );
+    """
+    
+    quotes_query = """
+    SELECT Quotes.text
+    FROM Quotes
+    WHERE authorID = (
+        SELECT Authors.ID FROM Authors
+        WHERE Authors.name ILIKE %s)
+    LIMIT %s;
+    """
+    
+    cursor.execute(count_query, (author_name,))
+    quote_count = cursor.fetchone()
+    
+    cursor.execute(quotes_query, (author_name, limit,))
+    quotes = [quote[0] for quote in cursor.fetchall()]
+    
+    # No quotes found
+    if quote_count[0] < 1:
+        response_data = {
+            "error": "quotes not found!"
+        }
+        json_response = json.dumps(response_data)
+        return Response(json_response, 404, content_type='application/json')
+    
+    author_name = author_name.title()
+    response_data = {
+        "total quotes available": quote_count[0],
+        "amount of quotes returned": len(quotes),
+        "author": author_name,
+        "quotes": quotes
+    }
+    
+    json_response = json.dumps(response_data)
+    return Response(json_response, 200, content_type='application/json')
