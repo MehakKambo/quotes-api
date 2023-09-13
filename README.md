@@ -14,8 +14,8 @@
 3. **List Quotes by Author**
    - **Endpoint:** `/quotes/author/{authorName}`
    - **Method:** GET
-   - **Description:** Retrieves a list of quotes by a specific author. By default, it returns up to 10 quotes by that author. If you want a different number of quotes, you can provide the limit parameter as a query parameter. The endpoint performs a case-insensitive search for the author's name, so the capitalization of the author's name does not affect the search.
-   - **Query Parameter (Optional):** The maximum number of quotes to retrieve. Defaults to 10 if not provided.
+   - **Description:** Retrieves a list of quotes by a specific author. By default, it returns up to 5 quotes by that author. If you want a different number of quotes, you can provide the limit parameter as a query parameter. The endpoint performs a case-insensitive search for the author's name, so the capitalization of the author's name does not affect the search.
+   - **Query Parameter (Optional):** The maximum number of quotes to retrieve. Defaults to 5 if not provided.
 
 4. **List Quotes by Category**
    - **Endpoint:** `/quotes/category/{categoryName}`

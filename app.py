@@ -90,7 +90,7 @@ def get_quotes_by_author(author_name_raw: str):
     conn = psycopg2.connect(app.config['CONNECTION_STRING'])
     cursor = conn.cursor()
     author_name = escape(author_name_raw)
-    limit = request.args.get('limit', default=10, type=int)
+    limit = request.args.get('limit', default=5, type=int)
     
     # Returns the number of total quotes for the given author
     count_query = """
@@ -117,6 +117,9 @@ def get_quotes_by_author(author_name_raw: str):
     cursor.execute(quotes_query, (author_name, limit,))
     quotes = [quote[0] for quote in cursor.fetchall()]
     
+    cursor.close()
+    conn.close()
+    
     # No quotes found
     if quote_count[0] < 1:
         response_data = {
@@ -130,6 +133,58 @@ def get_quotes_by_author(author_name_raw: str):
         "total quotes available": quote_count[0],
         "amount of quotes returned": len(quotes),
         "author": author_name,
+        "quotes": quotes
+    }
+    
+    json_response = json.dumps(response_data)
+    return Response(json_response, 200, content_type='application/json')
+
+# Returns a list of quotes belonging to a specific category
+@app.route('/quotes/category/<string:category_name_raw>', methods=['GET'])
+def get_quotes_by_category(category_name_raw: str):
+    conn = psycopg2.connect(app.config['CONNECTION_STRING'])
+    cursor = conn.cursor()
+    category_name = escape(category_name_raw)
+    limit = request.args.get('limit', default=5, type=int)
+    
+    count_query = """
+    SELECT COUNT(*) AS total_quotes
+    FROM Quotes
+    WHERE categoryID = (
+        SELECT ID FROM Categories 
+        WHERE name ILIKE %s
+    );
+    """
+    
+    quotes_query = """
+    SELECT Quotes.text 
+    FROM Quotes
+    WHERE Quotes.categoryID = (
+        SELECT ID FROM Categories 
+        WHERE Categories.name ILIKE %s
+    )
+    LIMIT %s;
+    """
+    
+    cursor.execute(count_query, (category_name,))
+    quote_count = cursor.fetchone()
+    
+    cursor.execute(quotes_query, (category_name, limit,))
+    quotes = [quote[0] for quote in cursor.fetchall()]
+    
+    if quote_count[0] < 1:
+        response_data = {
+            "error": "quotes not found!"
+        }
+        json_response = json.dumps(response_data)
+        return Response(json_response, 404, content_type='application/json')
+    
+
+    category_name = category_name.title()
+    response_data = {
+        "total quotes available": quote_count[0],
+        "amount of quotes returned": len(quotes),
+        "category": category_name,
         "quotes": quotes
     }
     
