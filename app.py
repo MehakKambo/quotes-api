@@ -158,7 +158,7 @@ def get_quotes_by_author(author_name_raw: str):
 
 # Returns a list of quotes belonging to a specific category
 @app.route('/quotes/category/<string:category_name_raw>', methods=['GET'])
-def get_quotes_by_category(category_name_raw: str):
+def get_quotes_by_categoryName(category_name_raw: str):
     conn = psycopg2.connect(app.config['CONNECTION_STRING'])
     cursor = conn.cursor()
     category_name = escape(category_name_raw)
