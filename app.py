@@ -211,6 +211,70 @@ def get_quotes_by_categoryName(category_name_raw: str):
     json_response = json.dumps(response_data)
     return Response(json_response, 200, content_type='application/json')
 
+# Returns the name of the category, given its ID
+def get_category_name(category_id: int):
+    conn = psycopg2.connect(app.config['CONNECTION_STRING'])
+    cursor = conn.cursor()
+    
+    query = "SELECT name FROM Categories WHERE ID = %s;"
+    cursor.execute(query, (category_id,))
+    category_name = cursor.fetchone()
+    
+    if category_name:
+        return category_name[0]    
+    
+    return None
+    
+# Returns a list of quotes belonging to a specific category using the ID
+@app.route('/quotes/category/<int:category_id_raw>', methods=['GET'])
+def get_quotes_by_categoryID(category_id_raw: int):
+    conn = psycopg2.connect(app.config['CONNECTION_STRING'])
+    cursor = conn.cursor()
+    category_id = escape(category_id_raw)
+    limit = request.args.get('limit', default=5, type=int)
+    
+    category_name = get_category_name(category_id)
+    
+    count_query = """
+    SELECT COUNT(text) AS total_quotes
+    FROM Quotes
+    WHERE categoryID =  %s;
+    """
+    cursor.execute(count_query, (category_id,))
+    quote_count = cursor.fetchone()
+    quote_count = quote_count[0]
+    
+    quotes_query = """
+    SELECT Quotes.text 
+    FROM Quotes
+    WHERE Quotes.categoryID = %s
+    LIMIT %s;
+    """
+    cursor.execute(quotes_query, (category_id, limit,))
+    quotes = [quote[0] for quote in cursor.fetchall()]
+    
+    cursor.close()
+    conn.close()
+    
+    if quote_count < 1:
+        response_data = {
+            "error": "quotes not found!"
+        }
+        json_response = json.dumps(response_data)
+        return Response(json_response, 404, content_type='application/json')
+    
+
+    response_data = {
+        "total quotes available": quote_count,
+        "amount of quotes returned": len(quotes),
+        "categoryID": category_id,
+        "categoryName": category_name,
+        "quotes": quotes
+    }
+    
+    json_response = json.dumps(response_data)
+    return Response(json_response, 200, content_type='application/json')
+
 # Returns a list of all categories for quotes
 @app.route('/categories', methods=['GET'])
 def get_all_categories():
