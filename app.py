@@ -156,6 +156,70 @@ def get_quotes_by_author(author_name_raw: str):
     json_response = json.dumps(response_data)
     return Response(json_response, 200, content_type='application/json')
 
+# Returns the name of the author, given its ID
+def get_author_name(author_id: int):
+    conn = psycopg2.connect(app.config['CONNECTION_STRING'])
+    cursor = conn.cursor()
+    
+    query = "SELECT name FROM Authors WHERE ID = %s;"
+    cursor.execute(query, (author_id,))
+    author_name = cursor.fetchone()
+    
+    if author_name:
+        return author_name[0]    
+    
+    return None
+    
+# Returns a list of quotes belonging to a specific author using the ID
+@app.route('/quotes/author/<int:author_id_raw>', methods=['GET'])
+def get_quotes_by_authorID(author_id_raw: int):
+    conn = psycopg2.connect(app.config['CONNECTION_STRING'])
+    cursor = conn.cursor()
+    author_id = escape(author_id_raw)
+    limit = request.args.get('limit', default=5, type=int)
+    
+    author_name = get_author_name(author_id)
+    
+    count_query = """
+    SELECT COUNT(text) AS total_quotes
+    FROM Quotes
+    WHERE authorID =  %s;
+    """
+    cursor.execute(count_query, (author_id,))
+    quote_count = cursor.fetchone()
+    quote_count = quote_count[0]
+    
+    quotes_query = """
+    SELECT Quotes.text 
+    FROM Quotes
+    WHERE Quotes.authorID = %s
+    LIMIT %s;
+    """
+    cursor.execute(quotes_query, (author_id, limit,))
+    quotes = [quote[0] for quote in cursor.fetchall()]
+    
+    cursor.close()
+    conn.close()
+    
+    if quote_count < 1:
+        response_data = {
+            "error": "quotes not found!"
+        }
+        json_response = json.dumps(response_data)
+        return Response(json_response, 404, content_type='application/json')
+    
+
+    response_data = {
+        "total quotes available": quote_count,
+        "amount of quotes returned": len(quotes),
+        "authorID": int(author_id),
+        "authorName": author_name,
+        "quotes": quotes
+    }
+    
+    json_response = json.dumps(response_data)
+    return Response(json_response, 200, content_type='application/json')
+
 # Returns a list of quotes belonging to a specific category
 @app.route('/quotes/category/<string:category_name_raw>', methods=['GET'])
 def get_quotes_by_categoryName(category_name_raw: str):
@@ -267,7 +331,7 @@ def get_quotes_by_categoryID(category_id_raw: int):
     response_data = {
         "total quotes available": quote_count,
         "amount of quotes returned": len(quotes),
-        "categoryID": category_id,
+        "categoryID": int(category_id),
         "categoryName": category_name,
         "quotes": quotes
     }
