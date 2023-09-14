@@ -7,63 +7,40 @@ import json
 app = Flask(__name__)
 app.config['CONNECTION_STRING'] = os.environ.get('CONNECTION_STRING')
 
-# The default route returns a random quote
-@app.route("/", methods=['GET'])
+
+#--------------------------------------------------------
+# Endpoint 1                                            |
+# Returns a randomly selected quote from the database.  |
+#--------------------------------------------------------
+@app.route("/quotes/random", methods=['GET'])
 def get_random_quote():
     conn = psycopg2.connect(app.config['CONNECTION_STRING'])
+    limit = request.args.get('limit', default=10, type=int)
+    
     query = """
     SELECT Quotes.text, Authors.name, Categories.name
     FROM Quotes
     JOIN Authors ON Quotes.authorID = Authors.ID
     JOIN Categories ON Quotes.categoryID = Categories.ID
     ORDER BY random()
-    LIMIT 1;
+    LIMIT %s;
     """
     cursor = conn.cursor()
-    cursor.execute(query)
-    quote, author_name, category = cursor.fetchone()
+    cursor.execute(query, (limit,))
+    response_keys = ['quote', 'author', 'category']
+    quotes = [dict(zip(response_keys, quote)) for quote in cursor.fetchall()]
     cursor.close()
     conn.close()
     
-    response_data = {'quote': quote, 'author': author_name, 'category': category}
+    response_data = {'randomQuotes': quotes}
     json_response = json.dumps(response_data)
     
     return Response(json_response, 200, content_type='application/json')
 
-# Returns a list of Authors
-@app.route('/authors', methods=['GET'])
-def get_all_authors():
-    conn = psycopg2.connect(app.config['CONNECTION_STRING'])
-    cursor = conn.cursor()
-    limit = request.args.get('limit', default=5, type=int)
-    
-    count_query = "SELECT COUNT(name) FROM Authors;" 
-    cursor.execute(count_query)
-    authors_count = cursor.fetchone()
-    authors_count = authors_count[0]
-    
-    authors_query = "SELECT name FROM Authors ORDER BY name LIMIT %s;"
-    cursor.execute(authors_query, (limit,))
-    authors = [author[0] for author in cursor.fetchall()]
-    
-    cursor.close()
-    conn.close()
-    
-    if authors_count < 1:
-        response_data = {
-            "authors": []
-        }
-    else:
-        response_data =  {
-            "total number of authors": authors_count,
-            "number of authors returned": len(authors),
-            "authors": authors
-        }
-    
-    json_response = json.dumps(response_data)
-    return Response(json_response, 200, content_type='application/json')
-
-# Returns the quote data provided the ID of that quote
+#--------------------------------------------------------
+# Endpoint 2                                            |
+# Returns the quote data provided the ID of that quote  |
+#--------------------------------------------------------
 @app.route('/quotes/<int:quote_id_raw>', methods=['GET'])
 def get_quote_by_id(quote_id_raw: int):
     conn = psycopg2.connect(app.config['CONNECTION_STRING'])
@@ -99,9 +76,50 @@ def get_quote_by_id(quote_id_raw: int):
     
     json_response = json.dumps(response_data)
     return Response(json_response, 200, content_type='application/json')
+
+
+#--------------------------------------------------------
+# Endpoint 3                                            |
+# Returns a list of Authors                             |
+#--------------------------------------------------------
+@app.route('/authors', methods=['GET'])
+def get_all_authors():
+    conn = psycopg2.connect(app.config['CONNECTION_STRING'])
+    cursor = conn.cursor()
+    limit = request.args.get('limit', default=5, type=int)
     
-# Returns the 10 quotes provided the author name
-# unless the limit is provided as parameter
+    count_query = "SELECT COUNT(name) FROM Authors;" 
+    cursor.execute(count_query)
+    authors_count = cursor.fetchone()
+    authors_count = authors_count[0]
+    
+    authors_query = "SELECT name FROM Authors ORDER BY name LIMIT %s;"
+    cursor.execute(authors_query, (limit,))
+    authors = [author[0] for author in cursor.fetchall()]
+    
+    cursor.close()
+    conn.close()
+    
+    if authors_count < 1:
+        response_data = {
+            "authors": []
+        }
+    else:
+        response_data =  {
+            "total number of authors": authors_count,
+            "number of authors returned": len(authors),
+            "authors": authors
+        }
+    
+    json_response = json.dumps(response_data)
+    return Response(json_response, 200, content_type='application/json')
+
+
+#--------------------------------------------------------
+# Endpoint 4                                            |
+# Returns the 10 quotes provided the author name        |
+# unless the limit is provided as parameter             |
+#--------------------------------------------------------
 @app.route('/quotes/author/<string:author_name_raw>', methods=['GET'])
 def get_quotes_by_author(author_name_raw: str):
     conn = psycopg2.connect(app.config['CONNECTION_STRING'])
@@ -156,7 +174,10 @@ def get_quotes_by_author(author_name_raw: str):
     json_response = json.dumps(response_data)
     return Response(json_response, 200, content_type='application/json')
 
-# Returns the name of the author, given its ID
+#--------------------------------------------------------
+# Endpoint 5                                            |
+# Returns the name of the author, given its ID          |
+#--------------------------------------------------------
 def get_author_name(author_id: int):
     conn = psycopg2.connect(app.config['CONNECTION_STRING'])
     cursor = conn.cursor()
@@ -170,7 +191,11 @@ def get_author_name(author_id: int):
     
     return None
     
-# Returns a list of quotes belonging to a specific author using the ID
+#--------------------------------------------------------
+# Endpoint 6                                            |
+# Returns a list of quotes belonging to a specific      |
+# author using the ID                                   |
+#--------------------------------------------------------
 @app.route('/quotes/author/<int:author_id_raw>', methods=['GET'])
 def get_quotes_by_authorID(author_id_raw: int):
     conn = psycopg2.connect(app.config['CONNECTION_STRING'])
@@ -220,7 +245,10 @@ def get_quotes_by_authorID(author_id_raw: int):
     json_response = json.dumps(response_data)
     return Response(json_response, 200, content_type='application/json')
 
-# Returns a list of quotes belonging to a specific category
+#-------------------------------------------------------------
+# Endpoint 7                                                 |
+# Returns a list of quotes belonging to a specific category  |
+#-------------------------------------------------------------
 @app.route('/quotes/category/<string:category_name_raw>', methods=['GET'])
 def get_quotes_by_categoryName(category_name_raw: str):
     conn = psycopg2.connect(app.config['CONNECTION_STRING'])
@@ -275,7 +303,10 @@ def get_quotes_by_categoryName(category_name_raw: str):
     json_response = json.dumps(response_data)
     return Response(json_response, 200, content_type='application/json')
 
-# Returns the name of the category, given its ID
+#--------------------------------------------------------
+# Endpoint 8                                            |
+# Returns the name of the category, given its ID        |
+#--------------------------------------------------------
 def get_category_name(category_id: int):
     conn = psycopg2.connect(app.config['CONNECTION_STRING'])
     cursor = conn.cursor()
@@ -288,8 +319,12 @@ def get_category_name(category_id: int):
         return category_name[0]    
     
     return None
-    
-# Returns a list of quotes belonging to a specific category using the ID
+
+#--------------------------------------------------------
+# Endpoint 9                                            |
+# Returns a list of quotes belonging to a specific      |
+# category using the ID                                 |
+#--------------------------------------------------------
 @app.route('/quotes/category/<int:category_id_raw>', methods=['GET'])
 def get_quotes_by_categoryID(category_id_raw: int):
     conn = psycopg2.connect(app.config['CONNECTION_STRING'])
@@ -339,7 +374,10 @@ def get_quotes_by_categoryID(category_id_raw: int):
     json_response = json.dumps(response_data)
     return Response(json_response, 200, content_type='application/json')
 
-# Returns a list of all categories for quotes
+#--------------------------------------------------------
+# Endpoint 10                                           |
+# Returns a list of all categories for quotes           |
+#--------------------------------------------------------
 @app.route('/categories', methods=['GET'])
 def get_all_categories():
     conn = psycopg2.connect(app.config['CONNECTION_STRING'])
