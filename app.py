@@ -467,12 +467,12 @@ def get_id_from_category_name(category_name):
 def quote_exists(cursor, quote):
     query = "SELECT ID FROM Quotes WHERE text ILIKE %s;"
     cursor.execute(query, (quote,))
-    result = cursor.fetchone()[0]
+    result = cursor.fetchone()
     
     if not result:
         return None
     
-    return result
+    return result[0]
     
 #--------------------------------------------------------
 # Endpoint 9                                            |
