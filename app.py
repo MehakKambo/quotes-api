@@ -1,4 +1,4 @@
-from flask import Flask, Response, request
+from flask import Flask, Response, request, abort
 import os
 import psycopg2
 from markupsafe import escape
@@ -175,7 +175,6 @@ def get_quotes_by_author(author_name_raw: str):
     return Response(json_response, 200, content_type='application/json')
 
 #--------------------------------------------------------
-# Endpoint 5                                            |
 # Returns the name of the author, given its ID          |
 #--------------------------------------------------------
 def get_author_name(author_id: int):
@@ -192,7 +191,7 @@ def get_author_name(author_id: int):
     return None
     
 #--------------------------------------------------------
-# Endpoint 6                                            |
+# Endpoint 5                                            |
 # Returns a list of quotes belonging to a specific      |
 # author using the ID                                   |
 #--------------------------------------------------------
@@ -246,7 +245,7 @@ def get_quotes_by_authorID(author_id_raw: int):
     return Response(json_response, 200, content_type='application/json')
 
 #-------------------------------------------------------------
-# Endpoint 7                                                 |
+# Endpoint 6                                                 |
 # Returns a list of quotes belonging to a specific category  |
 #-------------------------------------------------------------
 @app.route('/quotes/category/<string:category_name_raw>', methods=['GET'])
@@ -304,7 +303,6 @@ def get_quotes_by_categoryName(category_name_raw: str):
     return Response(json_response, 200, content_type='application/json')
 
 #--------------------------------------------------------
-# Endpoint 8                                            |
 # Returns the name of the category, given its ID        |
 #--------------------------------------------------------
 def get_category_name(category_id: int):
@@ -321,7 +319,7 @@ def get_category_name(category_id: int):
     return None
 
 #--------------------------------------------------------
-# Endpoint 9                                            |
+# Endpoint 7                                            |
 # Returns a list of quotes belonging to a specific      |
 # category using the ID                                 |
 #--------------------------------------------------------
@@ -375,7 +373,7 @@ def get_quotes_by_categoryID(category_id_raw: int):
     return Response(json_response, 200, content_type='application/json')
 
 #--------------------------------------------------------
-# Endpoint 10                                           |
+# Endpoint 8                                          |
 # Returns a list of all categories for quotes           |
 #--------------------------------------------------------
 @app.route('/categories', methods=['GET'])
@@ -409,3 +407,130 @@ def get_all_categories():
         
     json_response = json.dumps(response_data)    
     return Response(json_response, 200, content_type='application/json')    
+
+#--------------------------------------------------------
+# Returns the ID of the Author, given the name          |
+#--------------------------------------------------------
+def get_id_from_author_name(author_name):
+    if not author_name:
+        return None
+    
+    conn = psycopg2.connect(app.config['CONNECTION_STRING'])
+    cursor = conn.cursor()
+
+    query = "SELECT ID FROM Authors WHERE name ILIKE %s"
+    cursor.execute(query, (author_name,))
+    author_id = cursor.fetchone()
+    
+    # If the author doesn't exist, add the author
+    if not author_id:
+        query = "INSERT INTO Authors (name) VALUES (%s) RETURNING id;"
+        try:
+            cursor.execute(query, (author_name,))
+            conn.commit()
+            author_id = cursor.fetchone()
+        except (Exception, psycopg2.DatabaseError) as error:
+            return {"error": error}, 500
+        
+    return author_id 
+
+
+#--------------------------------------------------------
+# Returns the ID of the category, given the name        |
+#--------------------------------------------------------
+def get_id_from_category_name(category_name):
+    if not category_name:
+        return None
+    
+    conn = psycopg2.connect(app.config['CONNECTION_STRING'])
+    cursor = conn.cursor()
+
+    query = "SELECT ID FROM Categories WHERE name ILIKE %s"
+    cursor.execute(query, (category_name,))
+    category_id = cursor.fetchone()
+    
+    # If the author doesn't exist, add the author
+    if not category_id:
+        query = "INSERT INTO Categories (name) VALUES (%s) RETURNING id;"
+        try:
+            cursor.execute(query, (category_name,))
+            conn.commit()
+            category_id = cursor.fetchone()
+        except (Exception, psycopg2.DatabaseError) as error:
+            return {"error": error}, 500
+        
+    return category_id 
+
+#--------------------------------------------------------
+# Checks if the quote already exists                    |
+#--------------------------------------------------------
+def quote_exists(cursor, quote):
+    query = "SELECT ID FROM Quotes WHERE text ILIKE %s;"
+    cursor.execute(query, (quote,))
+    result = cursor.fetchone()[0]
+    
+    if not result:
+        return None
+    
+    return result
+    
+#--------------------------------------------------------
+# Endpoint 9                                            |
+# Adds a new quote to the database provided the         |
+# quote, author name, and the category.                 |
+#--------------------------------------------------------
+@app.route('/quotes', methods=['POST'])
+def add_new_quote():
+    # Things needed to insert a new quote
+    # quote, authorID, categoryID
+    conn = psycopg2.connect(app.config['CONNECTION_STRING'])
+    cursor = conn.cursor()
+    
+    # Query parameters
+    text = request.args.get('quote', default=None, type=str)
+    author_name = request.args.get('author', default=None, type=str)
+    category_name = request.args.get('category', default=None, type=str)
+    
+    # check for any missing parameters
+    missing_fields = []
+    if not text:
+        missing_fields.append("quote text")
+    if not author_name:
+        missing_fields.append("author name")
+    if not category_name:
+        missing_fields.append("category")
+    if missing_fields:
+        response_data = {"error": "couldn't add the quote", "missingFields": missing_fields}
+        json_response = json.dumps(response_data)
+        return Response(json_response, 400, content_type='application/json')
+    
+    #check if quote already exists
+    quote_already_exists = quote_exists(cursor, text)
+    if quote_already_exists:
+        return {"error": "quote already exists", "quoteID": quote_already_exists, "quote": text}
+    
+    author_id = get_id_from_author_name(author_name)
+    category_id = get_id_from_category_name(category_name)
+    
+    if not isinstance(author_id, tuple) or not isinstance(category_id, tuple)\
+        or author_id is None or category_id is None:
+        return {"error": "couldn't complete the request, try later"} # error while inserting author
+    
+    query = "INSERT INTO Quotes (text, authorID, categoryID) VALUES (%s, %s, %s) RETURNING ID;"
+    try:
+        cursor.execute(query, (text, author_id[0], category_id[0],))
+        conn.commit()
+        quote_id = cursor.fetchone()[0]
+        cursor.close()
+        conn.close()
+        response_data = {
+            "message": "successfully created a new quote",
+            "quoteID": quote_id,
+            "author": author_name,
+            "quote": text,
+            "category": category_name
+        }   
+        json_response = json.dumps(response_data)
+        return Response(json_response, 201, content_type='application/json')
+    except (Exception, psycopg2.DatabaseError) as error:
+            return {"error": error}, 500
