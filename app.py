@@ -432,7 +432,7 @@ def get_id_from_author_name(author_name):
         except (Exception, psycopg2.DatabaseError) as error:
             return {"error": error}, 500
         
-    return author_id 
+    return author_id[0]
 
 
 #--------------------------------------------------------
@@ -449,7 +449,7 @@ def get_id_from_category_name(category_name):
     cursor.execute(query, (category_name,))
     category_id = cursor.fetchone()
     
-    # If the author doesn't exist, add the author
+    # If the category doesn't exist, add the category
     if not category_id:
         query = "INSERT INTO Categories (name) VALUES (%s) RETURNING id;"
         try:
@@ -459,7 +459,7 @@ def get_id_from_category_name(category_name):
         except (Exception, psycopg2.DatabaseError) as error:
             return {"error": error}, 500
         
-    return category_id 
+    return category_id[0]
 
 #--------------------------------------------------------
 # Checks if the quote already exists                    |
@@ -518,7 +518,7 @@ def add_new_quote():
     
     query = "INSERT INTO Quotes (text, authorID, categoryID) VALUES (%s, %s, %s) RETURNING ID;"
     try:
-        cursor.execute(query, (text, author_id[0], category_id[0],))
+        cursor.execute(query, (text, author_id, category_id,))
         conn.commit()
         quote_id = cursor.fetchone()[0]
         cursor.close()
@@ -534,3 +534,51 @@ def add_new_quote():
         return Response(json_response, 201, content_type='application/json')
     except (Exception, psycopg2.DatabaseError) as error:
             return {"error": error}, 500
+        
+#--------------------------------------------------------
+# Endpoint 10                                           |
+# Update the quote, or the author, or the category      |
+#--------------------------------------------------------
+@app.route('/quotes/<int:quote_id_raw>', methods=['PATCH'])
+def update_quote(quote_id_raw: int):
+    conn = psycopg2.connect(app.config['CONNECTION_STRING'])
+    cursor = conn.cursor()
+    
+    # Fields required for updates
+    quote_id = escape(quote_id_raw)
+    text = request.args.get('quote', default=None, type=str)
+    author = request.args.get('author', default=None, type=str)
+    authorID = get_id_from_author_name(author)
+    category = request.args.get('category', default=None, type=str)
+    categoryID = get_id_from_category_name(category)
+    
+    find_quote_query = "SELECT text FROM Quotes WHERE ID = %s"
+    cursor.execute(find_quote_query, (quote_id,))
+    existing_quote = cursor.fetchone()
+    if not existing_quote:
+        return Response(json.dumps({"error": "Quote was not found"}), 
+                        status=404, content_type='application/json')
+    
+    update_quote_query = "UPDATE Quotes SET"
+    
+    if text:
+        update_quote_query += f" text = {text},"
+        
+    if author:
+        update_quote_query += f" authorID = {authorID},"
+    
+    if category:
+        update_quote_query += f" categoryID = {categoryID},"
+        
+    update_quote_query = update_quote_query.rstrip(',') + f" WHERE ID = {quote_id};"
+    try:
+        cursor.execute(update_quote_query)
+        conn.commit()
+        conn.close()
+        response_data = {
+            "message": "Quote updated succesfully",
+            "quoteID": quote_id
+        }
+        return Response(json.dumps(response_data), status=200, content_type='application/json')
+    except Exception as e:
+        return Response(json.dumps({"error": str(e)}), status=500, content_type='application/json')
