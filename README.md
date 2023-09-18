@@ -1,5 +1,38 @@
 # Quotes-API
 
+![Project logo](https://i0.wp.com/blog.logoscdn.com/wp-content/uploads/2016/06/quote-620x324.jpg)
+
+Welcome to the Quotes API project! This API allows you to manage and retrieve quotes, authors, and categories for inspirational and motivational content.
+
+## Prerequistes
+Before you begin, ensure you have met the following requirements:
+- Python3
+- virtualenv
+
+### Installation
+Clone this repository:
+```shell
+git clone https://github.com/MehakKambo/quotes-api.git
+cd quotes-api
+```
+
+Create and Activate virtual environment:
+```shell
+python3 -m venv env
+source env/bin/activate
+```
+
+Install all the dependencies:
+```shell
+pip install -r requirements.txt
+```
+
+Running the API
+```shell
+Flask run
+```
+
+Your Flask server will begin running and can be accessed at [http://127.0.0.1:5000](http://127.0.0.1:5000)
 ## API Endpoints
 
 1. **Retrieve Random Quote**
@@ -57,7 +90,30 @@
 ## Database Schema  
 ![Alt Text](https://github.com/MehakKambo/quotes-api/blob/main/schema.png)
 
-## SQL Script
+## Run the SQL Script
 ``` bash
 \i /path/to/the/schema.sql 
 ```
+
+## Contributing
+
+Contributions are welcome! Please follow these guidelines:
+
+1. Fork the repository.
+2. Create your feature branch: 
+```shell
+git checkout -b feature-name
+```
+3. Commit Your changes:
+```shell
+git commit -m 'Add some feature'
+```
+4. Push to the branch:
+```shell
+git push origin feature-name
+```
+5. Submit a pull request.
+
+
+## License
+This project is licensed under the MIT License.

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #555;
+        }
+
+        ol {
+            list-style-type: decimal;
+            margin-left: 20px;
+        }
+
+        li {
+            margin-top: 10px;
+        }
+
+        strong {
+            font-weight: bold;
+        }
+
+        code {
+            background-color: #f7f7f7;
+            padding: 3px 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        ul li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="quotes-api">Welcome to Quotes-API</h1>
+    <h2 id="tentative-endpoints">API Endpoints</h2>
+    <ol>
+        <li>
+            <p><strong>Retrieve Random Quote</strong></p>
+            <ul>
+                <li><strong>Endpoint:</strong> <code>/quotes/random</code></li>
+                <li><strong>Method:</strong> GET</li>
+                <li><strong>Description:</strong> Returns a randomly selected quote from the database.</li>
+            </ul>
+        </li>
+        <li>
+            <p><strong>Retrieve Quote by ID</strong></p>
+            <ul>
+                <li><strong>Endpoint:</strong> <code>/quotes/{id}</code></li>
+                <li><strong>Method:</strong> GET</li>
+                <li><strong>Description:</strong> Retrieves a specific quote by its unique identifier (ID).</li>
+            </ul>
+        </li>
+        <li>
+            <p><strong>List All Authors</strong></p>
+            <ul>
+                <li><strong>Endpoint:</strong> <code>/authors</code></li>
+                <li><strong>Method:</strong> GET</li>
+                <li><strong>Description:</strong> Retrieves a list of all authors from the database.</li>
+            </ul>
+        </li>
+        <li>
+            <p><strong>List Quotes by Author Name</strong></p>
+            <ul>
+                <li><strong>Endpoint:</strong> <code>/quotes/author/{authorName}</code></li>
+                <li><strong>Method:</strong> GET</li>
+                <li><strong>Description:</strong> Retrieves a list of quotes by a specific author using its name.</li>
+            </ul>
+        </li>
+        <li>
+            <p><strong>List Quotes by Author ID</strong></p>
+            <ul>
+                <li><strong>Endpoint:</strong> <code>/quotes/author/{authorID}</code></li>
+                <li><strong>Method:</strong> GET</li>
+                <li><strong>Description:</strong> Retrieves a list of quotes by a specific author using its ID.</li>
+            </ul>
+        </li>
+        <li>
+            <p><strong>List Quotes by Category Name</strong></p>
+            <ul>
+                <li><strong>Endpoint:</strong> <code>/quotes/category/{categoryName}</code></li>
+                <li><strong>Method:</strong> GET</li>
+                <li><strong>Description:</strong> Retrieves a list of quotes belonging to a specific category using its name.</li>
+            </ul>
+        </li>
+        <li>
+            <p><strong>List Quotes by Category ID</strong></p>
+            <ul>
+                <li><strong>Endpoint:</strong> <code>/quotes/category/{categoryID}</code></li>
+                <li><strong>Method:</strong> GET</li>
+                <li><strong>Description:</strong> Retrieves a list of quotes belonging to a specific category using its ID.</li>
+            </ul>
+        </li>
+        <li>
+            <p><strong>List All Categories</strong></p>
+            <ul>
+                <li><strong>Endpoint:</strong> <code>/categories</code></li>
+                <li><strong>Method:</strong> GET</li>
+                <li><strong>Description:</strong> Retrieves a list of all categories for quotes.</li>
+            </ul>
+        </li>
+        <li>
+            <p><strong>Add a New Quote</strong></p>
+            <ul>
+                <li><strong>Endpoint:</strong> <code>/quotes</code></li>
+                <li><strong>Method:</strong> POST</li>
+                <li><strong>Required URL Parameters:</strong> <code>["quote", "author", "category"]</code></li>
+                <li><strong>Description:</strong> Allows users to submit new quotes to be added to the database.</li>
+            </ul>
+        </li>
+        <li>
+            <p><strong>Update Quote</strong></p>
+            <ul>
+                <li><strong>Endpoint:</strong> <code>/quotes/{id}</code></li>
+                <li><strong>Method:</strong>PATCH</li>
+                <li><strong>URL Parameters (At least one should be present):</strong> <code>["quote", "author", "category"]</code></li>
+                <li><strong>Description:</strong> Allows users to update an existing quote by providing new text,
+                    author, or category.</li>
+            </ul>
+        </li>
+    </ol>
+</body>
+</html>
