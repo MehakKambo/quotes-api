@@ -6,7 +6,7 @@ from markupsafe import escape
 import json
 
 app = Flask(__name__)
-cors = CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
+CORS(app)
 
 app.config['CONNECTION_STRING'] = os.environ.get('CONNECTION_STRING')
 
