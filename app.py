@@ -1,10 +1,13 @@
 from flask import Flask, Response, request, abort, render_template
+from flask_cors import CORS
 import os
 import psycopg2
 from markupsafe import escape
 import json
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
+
 app.config['CONNECTION_STRING'] = os.environ.get('CONNECTION_STRING')
 
 #--------------------------------------------------------
