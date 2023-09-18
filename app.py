@@ -16,6 +16,14 @@ app.config['CONNECTION_STRING'] = os.environ.get('CONNECTION_STRING')
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
+#--------------------------------------------------------
+# Returns an error, if limit is negative                |           
+#--------------------------------------------------------
+def limit_error():
+    response_data = {"error": "limit cannot be negative"}
+    json_response = json.dumps(response_data)
+        
+    return Response(json_response, 404, content_type='application/json')
 
 #--------------------------------------------------------
 # Endpoint 1                                            |
@@ -25,6 +33,9 @@ def index():
 def get_random_quote():
     conn = psycopg2.connect(app.config['CONNECTION_STRING'])
     limit = request.args.get('limit', default=1, type=int)
+    
+    if limit < 0:
+        return limit_error()
     
     query = """
     SELECT Quotes.text, Authors.name, Categories.name
@@ -97,6 +108,9 @@ def get_all_authors():
     cursor = conn.cursor()
     limit = request.args.get('limit', default=5, type=int)
     
+    if limit < 0:
+        return limit_error()
+    
     count_query = "SELECT COUNT(name) FROM Authors;" 
     cursor.execute(count_query)
     authors_count = cursor.fetchone()
@@ -135,6 +149,9 @@ def get_quotes_by_author(author_name_raw: str):
     cursor = conn.cursor()
     author_name = escape(author_name_raw)
     limit = request.args.get('limit', default=5, type=int)
+    
+    if limit < 0:
+        return limit_error()
     
     # Returns the number of total quotes for the given author
     count_query = """
@@ -211,6 +228,9 @@ def get_quotes_by_authorID(author_id_raw: int):
     author_id = escape(author_id_raw)
     limit = request.args.get('limit', default=5, type=int)
     
+    if limit < 0:
+        return limit_error()
+    
     author_name = get_author_name(author_id)
     
     count_query = """
@@ -263,6 +283,9 @@ def get_quotes_by_categoryName(category_name_raw: str):
     cursor = conn.cursor()
     category_name = escape(category_name_raw)
     limit = request.args.get('limit', default=5, type=int)
+    
+    if limit < 0:
+        return limit_error()
     
     count_query = """
     SELECT COUNT(*) AS total_quotes
@@ -339,6 +362,9 @@ def get_quotes_by_categoryID(category_id_raw: int):
     category_id = escape(category_id_raw)
     limit = request.args.get('limit', default=5, type=int)
     
+    if limit < 0:
+        return limit_error()
+    
     category_name = get_category_name(category_id)
     
     count_query = """
@@ -390,6 +416,9 @@ def get_all_categories():
     conn = psycopg2.connect(app.config['CONNECTION_STRING'])
     cursor = conn.cursor()
     limit = request.args.get('limit', default=5, type=int)
+    
+    if limit < 0:
+        return limit_error()
     
     count_query = "SELECT COUNT(name) FROM Categories;"
     cursor.execute(count_query)
