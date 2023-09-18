@@ -1,4 +1,4 @@
-from flask import Flask, Response, request, abort
+from flask import Flask, Response, request, abort, render_template
 import os
 import psycopg2
 from markupsafe import escape
@@ -7,6 +7,12 @@ import json
 app = Flask(__name__)
 app.config['CONNECTION_STRING'] = os.environ.get('CONNECTION_STRING')
 
+#--------------------------------------------------------
+# Endpoint 0                                            |
+#--------------------------------------------------------
+@app.route('/', methods=['GET'])
+def index():
+    return render_template('index.html')
 
 #--------------------------------------------------------
 # Endpoint 1                                            |
@@ -15,7 +21,7 @@ app.config['CONNECTION_STRING'] = os.environ.get('CONNECTION_STRING')
 @app.route("/quotes/random", methods=['GET'])
 def get_random_quote():
     conn = psycopg2.connect(app.config['CONNECTION_STRING'])
-    limit = request.args.get('limit', default=10, type=int)
+    limit = request.args.get('limit', default=1, type=int)
     
     query = """
     SELECT Quotes.text, Authors.name, Categories.name
