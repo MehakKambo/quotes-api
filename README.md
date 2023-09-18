@@ -1,6 +1,7 @@
 # Quotes-API
 
-## Tentative Endpoints
+## API Endpoints
+
 1. **Retrieve Random Quote**
    - **Endpoint:** `/quotes/random`
    - **Method:** GET
@@ -11,47 +12,47 @@
    - **Method:** GET
    - **Description:** Retrieves a specific quote by its unique identifier (ID).
 
-3. **List Quotes by Author**
-   - **Endpoint:** `/quotes/author/{authorName}`
-   - **Method:** GET
-   - **Description:** Retrieves a list of quotes by a specific author. By default, it returns up to 5 quotes by that author. If you want a different number of quotes, you can provide the limit parameter as a query parameter. The endpoint performs a case-insensitive search for the author's name, so the capitalization of the author's name does not affect the search.
-   - **Query Parameter (Optional):** The maximum number of quotes to retrieve. Defaults to 5 if not provided.
-
-4. **List Quotes by Category**
-   - **Endpoint:** `/quotes/category/{categoryName}`
-   - **Method:** GET
-   - **Description:** Retrieves a list of quotes belonging to a specific category.
-
-5. **Search Quotes**
-   - **Endpoint:** `/quotes/search`
-   - **Method:** GET
-   - **Description:** Allows users to search for quotes based on keywords, author names, or categories.
-
-6. **Add a New Quote**
-   - **Endpoint:** `/quotes`
-   - **Method:** POST
-   - **Description:** Allows users to submit new quotes to be added to the database.
-
-7. **Update Quote**
-   - **Endpoint:** `/quotes/{id}`
-   - **Method:** PUT or PATCH
-   - **Description:** Allows users to update an existing quote by providing new text, author, or category.
-
-8. **Delete Quote**
-   - **Endpoint:** `/quotes/{id}`
-   - **Method:** DELETE
-   - **Description:** Allows users to delete a quote from the database by its ID.
-
-9. **List All Authors**
+3. **List All Authors**
    - **Endpoint:** `/authors`
    - **Method:** GET
    - **Description:** Retrieves a list of all authors from the database.
 
-10. **List All Categories**
-    - **Endpoint:** `/categories`
-    - **Method:** GET
-    - **Description:** Retrieves a list of all categories for quotes.
+4. **List Quotes by Author Name**
+   - **Endpoint:** `/quotes/author/{authorName}`
+   - **Method:** GET
+   - **Description:** Retrieves a list of quotes by a specific author using its name.
 
+5. **List Quotes by Author ID**
+   - **Endpoint:** `/quotes/author/{authorID}`
+   - **Method:** GET
+   - **Description:** Retrieves a list of quotes by a specific author using its ID.
+
+6. **List Quotes by Category Name**
+   - **Endpoint:** `/quotes/category/{categoryName}`
+   - **Method:** GET
+   - **Description:** Retrieves a list of quotes belonging to a specific category using its name.
+
+7. **List Quotes by Category ID**
+   - **Endpoint:** `/quotes/category/{categoryID}`
+   - **Method:** GET
+   - **Description:** Retrieves a list of quotes belonging to a specific category using its ID.
+
+8. **List All Categories**
+   - **Endpoint:** `/categories`
+   - **Method:** GET
+   - **Description:** Retrieves a list of all categories for quotes.
+
+9. **Add a New Quote**
+   - **Endpoint:** `/quotes`
+   - **Method:** POST
+   - **Required URL Parameters:** `["quote", "author", "category"]`
+   - **Description:** Allows users to submit new quotes to be added to the database.
+
+10. **Update Quote**
+    - **Endpoint:** `/quotes/{id}`
+    - **Method:** PATCH
+    - **URL Parameters (At least one should be present):** `["quote", "author", "category"]`
+    - **Description:** Allows users to update an existing quote by providing new text, author, or category.
 
 ## Database Schema  
 ![Alt Text](https://github.com/MehakKambo/quotes-api/blob/main/schema.png)
