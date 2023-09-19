@@ -545,7 +545,7 @@ def add_new_quote():
     #check if quote already exists
     quote_already_exists = quote_exists(cursor, text)
     if quote_already_exists:
-        return {"error": "quote already exists", "quoteID": quote_already_exists, "quote": text}
+        return {"error": "quote already exists", "quoteID": quote_already_exists, "quote": text}, 404
     
     author_id = get_id_from_author_name(author_name)
     category_id = get_id_from_category_name(category_name)
