@@ -528,11 +528,7 @@ def add_new_quote():
     text = data.get('quote')
     author_name = data.get('author')
     category_name = data.get('category')
-    # Query parameters
-    # text = request.args.get('quote', default=None, type=str)
-    # author_name = request.args.get('author', default=None, type=str)
-    # category_name = request.args.get('category', default=None, type=str)
-    
+
     # check for any missing parameters
     missing_fields = []
     if not text:
@@ -601,7 +597,6 @@ def update_quote(quote_id_raw: int):
                         status=404, content_type='application/json')
     
     update_quote_query = "UPDATE Quotes SET"
-    
     if text:
         update_quote_query += f" text = {text},"
         
