@@ -524,10 +524,14 @@ def add_new_quote():
     conn = psycopg2.connect(app.config['CONNECTION_STRING'])
     cursor = conn.cursor()
     
+    data = request.json
+    text = data.get('quote')
+    author_name = data.get('author')
+    category_name = data.get('category')
     # Query parameters
-    text = request.args.get('quote', default=None, type=str)
-    author_name = request.args.get('author', default=None, type=str)
-    category_name = request.args.get('category', default=None, type=str)
+    # text = request.args.get('quote', default=None, type=str)
+    # author_name = request.args.get('author', default=None, type=str)
+    # category_name = request.args.get('category', default=None, type=str)
     
     # check for any missing parameters
     missing_fields = []
@@ -550,8 +554,7 @@ def add_new_quote():
     author_id = get_id_from_author_name(author_name)
     category_id = get_id_from_category_name(category_name)
     
-    if not isinstance(author_id, tuple) or not isinstance(category_id, tuple)\
-        or author_id is None or category_id is None:
+    if author_id is None or category_id is None:
         return {"error": "couldn't complete the request, try later"} # error while inserting author
     
     query = "INSERT INTO Quotes (text, authorID, categoryID) VALUES (%s, %s, %s) RETURNING ID;"
